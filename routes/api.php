@@ -15,7 +15,19 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+//Public
+Route::get('/tasks', [TaskController::class, 'index']);
+Route::get('/tasks/{id}', [TaskController::class, 'show']);
 Route::resource('tasks', TaskController::class);
 
-//Route::get('/tasks', [TaskController::class, 'index']);
-//Route::post('/tasks', [TaskController::class, 'store']);
+//Protected
+Route::group(['middleware' => ['auth:sanctum']], function () {
+    Route::post('/tasks', [TaskController::class, 'store']);
+    Route::put('/tasks/{id}', [TaskController::class, 'update']);
+    Route::delete('/tasks/{id}', [TaskController::class, 'destroy']);
+});
+
+
+Route::middleware('auth:api')->get('/user', function (Request $request) {
+    return $request->user();
+});
